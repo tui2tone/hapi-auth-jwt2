@@ -1,6 +1,6 @@
 var test   = require('tape');
 var JWT    = require('jsonwebtoken');
-var secret = 'NeverShareYourSecret';
+var secret = process.env.JWT_SECRET;
 
 var server = require('./basic_server.js');
 

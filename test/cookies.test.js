@@ -1,6 +1,6 @@
 var test   = require('tape');
 var JWT    = require('jsonwebtoken');
-var secret = 'NeverShareYourSecret';
+var secret = process.env.JWT_SECRET;
 var server = require('./basic_server.js');
 var cookie_options = '; Max-Age=31536000;'; //' Expires=Mon, 18 Jul 2016 05:29:45 GMT; Secure; HttpOnly';
 
@@ -176,4 +176,3 @@ test("Attempt to access restricted content with cookieKey=''", function(t) {
     t.end();
   });
 });
-

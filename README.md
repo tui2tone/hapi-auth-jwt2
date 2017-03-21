@@ -38,6 +38,17 @@ https://github.com/dwyl/hapi-auth-jwt2/issues
 ```sh
 npm install hapi-auth-jwt2 --save
 ```
+### Set `JWT_SECRET` Environment Variable
+
+Define an environment variable for your `JWT_SECRET`
+(_the key used to sign the JWT tokens_):
+
+```
+export JWT_SECRET="EverythingIsAwesome!"
+```
+
+> If you are new to using Environment Variables,
+see: https://github.com/dwyl/learn-environment-variables
 
 ### Example
 

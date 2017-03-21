@@ -1,5 +1,5 @@
 var Hapi   = require('hapi');
-var secret = 'NeverShareYourSecret';
+var secret = process.env.JWT_SECRET; // github.com/dwyl/learn-environment-variables
 
 // for debug options see: http://hapijs.com/tutorials/logging
 var server = new Hapi.Server({ debug: false });

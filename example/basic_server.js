@@ -9,7 +9,6 @@ var people = { // our "users database"
 
 // bring your own validation function
 var validate = function (decoded, request, callback) {
-
     // do your checks to see if the person is valid
     if (!people[decoded.id]) {
       return callback(null, false);
@@ -29,7 +28,7 @@ server.register(require('../lib'), function (err) {
     }
 
     server.auth.strategy('jwt', 'jwt',
-    { key: 'NeverShareYourSecret', // Never Share your secret key
+    { key: process.env.JWT_SECRET, // Never Share your secret key
       validateFunc: validate       // validate function defined above
     });
 

@@ -3,8 +3,6 @@ var hapiAuthJWT = require('../lib/');
 var JWT         = require('jsonwebtoken');  // used to sign our content
 var port        = process.env.PORT || 8000; // allow port to be set
 
-var secret = 'NeverShareYourSecret'; // Never Share This! even in private GitHub repos!
-
 var people = {
     1: {
       id: 1,
@@ -41,8 +39,9 @@ server.register(hapiAuthJWT, function (err) {
     console.log(err);
   }
   // see: http://hapijs.com/api#serverauthschemename-scheme
-  server.auth.strategy('jwt', 'jwt',
-  { key: secret, validateFunc: validate,
+  server.auth.strategy('jwt', 'jwt', {
+    key: process.env.JWT_SECRET,
+    validateFunc: validate,
     verifyOptions: { ignoreExpiration: true }
   });
 
