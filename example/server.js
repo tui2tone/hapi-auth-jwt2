@@ -11,7 +11,7 @@ var people = {
 };
 
 // use the token as the 'authorization' header in requests
-var token = JWT.sign(people[1], secret); // synchronous
+var token = JWT.sign(people[1], process.env.JWT_SECRET); // synchronous
 console.log(token);
 // bring your own validation function
 var validate = function (decoded, request, callback) {
@@ -67,3 +67,5 @@ server.register(hapiAuthJWT, function (err) {
 server.start(function () {
   console.log('Server running at:', server.info.uri);
 });
+
+module.exports = server;

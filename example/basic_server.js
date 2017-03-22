@@ -1,5 +1,7 @@
+// this example is mirrored directly from the readme
+// and tested in /test/_readme_example.test.js
 var Hapi = require('hapi');
-
+var Hoek = require('hoek'); // see: github.com/dwyl/hapi-error#explanation
 var people = { // our "users database"
     1: {
       id: 1,
@@ -20,12 +22,10 @@ var validate = function (decoded, request, callback) {
 
 var server = new Hapi.Server();
 server.connection({ port: 8000 });
-        // include our module here ↓↓
+  // include our module here ↓↓
 server.register(require('../lib'), function (err) {
-
-    if(err){
-      console.log(err);
-    }
+    // for friendly error handling see: github.com/dwyl/hapi-error
+    Hoek.assert(!err, 'Error registering hapi-auth-jwt2 plugin');
 
     server.auth.strategy('jwt', 'jwt',
     { key: process.env.JWT_SECRET, // Never Share your secret key
@@ -54,3 +54,5 @@ server.register(require('../lib'), function (err) {
 server.start(function () {
   console.log('Server running at:', server.info.uri);
 });
+
+module.exports = server;

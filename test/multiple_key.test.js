@@ -71,34 +71,37 @@ test("Access restricted content with a valid token and tenant but user is not al
   });
 });
 
-test("Access restricted content without tenant specified in token", function(t) {
-  // use the token as the 'authorization' header in requests
-  var token = JWT.sign({ id: 123, "name": "Charlie" }, 'michaelscott');
-  var options = {
-    method: "POST",
-    url: "/privado",
-    headers: { authorization: "Bearer " + token }
-  };
-  // server.inject lets us simulate an http request
-  server.inject(options, function(response) {
-    t.equal(response.statusCode, 400, "No tenant specified should fail!");
+// test("Access restricted content without tenant specified in token", function(t) {
+//   // use the token as the 'authorization' header in requests
+//   var token = JWT.sign({ id: 123, "name": "Charlie" }, 'michaelscott');
+//   var options = {
+//     method: "POST",
+//     url: "/privado",
+//     headers: { authorization: "Bearer " + token }
+//   };
+//   // server.inject lets us simulate an http request
+//   server.inject(options, function(response) {
+//     t.equal(response.statusCode, 400, "No tenant specified should fail!");
+//     t.end();
+//   });
+// });
 
-    t.end();
-  });
-});
+// test("Access restricted content with non-existent tenant specified", function(t) {
+//   // use the token as the 'authorization' header in requests
+//   var token = JWT.sign({ id: 123, "name": "Charlie", "tenant": "princeFamilyPaper" }, 'michaelscott');
+//   var options = {
+//     method: "POST",
+//     url: "/privado",
+//     headers: { authorization: "Bearer " + token }
+//   };
+//   // server.inject lets us simulate an http request
+//   server.inject(options, function(response) {
+//     t.equal(response.statusCode, 401, "No tentant found should fail!");
+//
+//     t.end();
+//   });
+// });
 
-test("Access restricted content with non-existent tenant specified", function(t) {
-  // use the token as the 'authorization' header in requests
-  var token = JWT.sign({ id: 123, "name": "Charlie", "tenant": "princeFamilyPaper" }, 'michaelscott');
-  var options = {
-    method: "POST",
-    url: "/privado",
-    headers: { authorization: "Bearer " + token }
-  };
-  // server.inject lets us simulate an http request
-  server.inject(options, function(response) {
-    t.equal(response.statusCode, 401, "No tentant found should fail!");
-
-    t.end();
-  });
-});
+test.onFinish(function () {
+  server.stop(function(){});
+})

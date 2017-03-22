@@ -36,15 +36,17 @@ https://github.com/dwyl/hapi-auth-jwt2/issues
 ### Install from NPM
 
 ```sh
-npm install hapi-auth-jwt2 --save
+npm install hapi-auth-jwt2 hapi hoek --save
 ```
+
 ### Set `JWT_SECRET` Environment Variable
 
 Define an environment variable for your `JWT_SECRET`
 (_the key used to sign the JWT tokens_):
 
+e.g:
 ```
-export JWT_SECRET="EverythingIsAwesome!"
+export JWT_SECRET="EverythingIsAwesome"
 ```
 
 > If you are new to using Environment Variables,
@@ -54,10 +56,9 @@ see: https://github.com/dwyl/learn-environment-variables
 
 This basic usage example should help you get started:
 
-
 ```javascript
 var Hapi = require('hapi');
-
+var Hoek = require('hoek'); // see: github.com/dwyl/hapi-error#explanation
 var people = { // our "users database"
     1: {
       id: 1,
@@ -67,7 +68,6 @@ var people = { // our "users database"
 
 // bring your own validation function
 var validate = function (decoded, request, callback) {
-
     // do your checks to see if the person is valid
     if (!people[decoded.id]) {
       return callback(null, false);
@@ -79,17 +79,14 @@ var validate = function (decoded, request, callback) {
 
 var server = new Hapi.Server();
 server.connection({ port: 8000 });
-        // include our module here ↓↓
-server.register(require('hapi-auth-jwt2'), function (err) {
-
-    if(err){
-      console.log(err);
-    }
+  // include our module here ↓↓
+server.register(require('../lib'), function (err) {
+    // for friendly error handling see: github.com/dwyl/hapi-error
+    Hoek.assert(!err, 'Error registering hapi-auth-jwt2 plugin');
 
     server.auth.strategy('jwt', 'jwt',
-    { key: 'NeverShareYourSecret',          // Never Share your secret key
-      validateFunc: validate,            // validate function defined above
-      verifyOptions: { algorithms: [ 'HS256' ] } // pick a strong algorithm
+    { key: process.env.JWT_SECRET, // Never Share your secret key
+      validateFunc: validate       // validate function defined above
     });
 
     server.auth.default('jwt');
@@ -114,6 +111,8 @@ server.register(require('hapi-auth-jwt2'), function (err) {
 server.start(function () {
   console.log('Server running at:', server.info.uri);
 });
+
+module.exports = server;
 ```
 
 ## *Quick Demo*
@@ -127,6 +126,7 @@ git clone https://github.com/dwyl/hapi-auth-jwt2.git && cd hapi-auth-jwt2
 Run the server with:
 
 ```sh
+export JWT_SECRET="EverythingIsAwesome"
 npm install && node example/server.js
 ```
 
@@ -137,8 +137,6 @@ Now (*in a different terminal window*) use `cURL` to access the two routes:
 ```sh
 curl -v http://localhost:8000/
 ```
-
-
 
 #### Token Required
 
@@ -156,13 +154,13 @@ Now access the url using the following format:
 
 A here's a *valid* token you can use (*copy-paste* this command):
 ```sh
-curl -v -H "Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwibmFtZSI6IkFudGhvbnkgVmFsaWQgVXNlciIsImlhdCI6MTQyNTQ3MzUzNX0.KA68l60mjiC8EXaC2odnjFwdIDxE__iDu5RwLdN1F2A" \
+curl -v -H "Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFudGhvbnkgVmFsaWQgVXNlciIsImlhdCI6MTQ5MDE0NDQ2NX0.ThJCuqb1J6ePbeyWFdd1TQQaHLyf0qNT22WwOSmHuPI" \
 http://localhost:8000/restricted
 ```
 
 or visit this url in your browser (*passing the token in url*):
 
-<small> http://localhost:8000/restricted?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwibmFtZSI6IkFudGhvbnkgVmFsaWQgVXNlciIsImlhdCI6MTQyNTQ3MzUzNX0.KA68l60mjiC8EXaC2odnjFwdIDxE__iDu5RwLdN1F2A </small>
+<small> http://localhost:8000/restricted?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6IkFudGhvbnkgVmFsaWQgVXNlciIsImlhdCI6MTQ5MDE0NDQ2NX0.ThJCuqb1J6ePbeyWFdd1TQQaHLyf0qNT22WwOSmHuPI </small>
 
 That's it.
 
