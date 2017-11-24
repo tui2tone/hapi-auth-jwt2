@@ -19,9 +19,7 @@ var validate = function (decoded, request, callback) {
     }
 };
 
-var server = new Hapi.Server();
-server.connection({ port: 8000 });
-        // include our module here ↓↓
+var server = new Hapi.Server({ port: 8000 });
 server.register(require('../lib'), function (err) {
 
     if(err){

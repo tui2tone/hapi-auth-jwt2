@@ -33,38 +33,45 @@ var validate = function (decoded, request, callback) {
   }
 };
 
-var server = new Hapi.Server();
-server.connection({ port: port });
+var server = new Hapi.Server({ port: port });
 
-server.register(hapiAuthJWT, function (err) {
-  if(err){
+const start = async () => {
+  try {
+    await server.register([ hapiAuthJWT ])
+
+    server.auth.strategy('jwt', 'jwt',
+    { 
+      key: secret, 
+      validateFunc: validate,
+      verifyOptions: { ignoreExpiration: true }
+    });
+  
+    server.auth.default('jwt');
+  
+    server.route([
+      {
+        method: "GET", path: "/", config: { auth: false },
+        handler: (request, response) => {
+          return {
+            text: 'Token not required'
+          }
+        }
+      },
+      {
+        method: 'GET', path: '/restricted', config: { auth: 'jwt' },
+        handler: (request, h) => {
+          
+          return h.response({
+            message: 'You used a Valid JWT Token to access /restricted endpoint!'
+          }).header("Authorization", request.headers.authorization)
+        }
+      }
+    ]);
+
+    await server.start()
+  } catch(error) {
     console.log(err);
   }
-  // see: http://hapijs.com/api#serverauthschemename-scheme
-  server.auth.strategy('jwt', 'jwt',
-  { key: secret, validateFunc: validate,
-    verifyOptions: { ignoreExpiration: true }
-  });
+}
 
-  server.auth.default('jwt');
-
-  server.route([
-    {
-      method: "GET", path: "/", config: { auth: false },
-      handler: function(request, reply) {
-        reply({text: 'Token not required'});
-      }
-    },
-    {
-      method: 'GET', path: '/restricted', config: { auth: 'jwt' },
-      handler: function(request, reply) {
-        reply({message: 'You used a Valid JWT Token to access /restricted endpoint!'})
-        .header("Authorization", request.headers.authorization);
-      }
-    }
-  ]);
-});
-
-server.start(function () {
-  console.log('Server running at:', server.info.uri);
-});
+start();

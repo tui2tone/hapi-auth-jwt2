@@ -47,16 +47,6 @@
     "cookie": "^0.3.1",
     "jsonwebtoken": "^7.4.1"
   },
-  "devDependencies": {
-    "aguid": "^2.0.0",
-    "goodparts": "^1.2.1",
-    "hapi": "^16.4.3",
-    "istanbul": "^0.4.5",
-    "jshint": "^2.9.4",
-    "pre-commit": "^1.2.2",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.6.3"
-  },
   "engines": {
     "node": ">=4.2.3"
   },
@@ -72,5 +62,15 @@
   "pre-commit": [
     "coverage",
     "jshint"
-  ]
+  ],
+  "devDependencies": {
+    "aguid": "^2.0.0",
+    "goodparts": "^1.2.1",
+    "hapi": "^17.1.1",
+    "istanbul": "^0.4.5",
+    "jshint": "^2.9.5",
+    "pre-commit": "^1.2.2",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.8.0"
+  }
 }
